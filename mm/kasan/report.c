@@ -102,6 +102,14 @@ static void print_track(struct kasan_track *track)
 	pr_err("PID = %d, CPU = %d, timestamp = %llu\n",
 		(int)track->pid, (int)track->cpu,
 		(unsigned long long)track->when);
+	if (track->stack) {
+		struct stack_trace trace;
+
+		kasan_fetch_stack(track->stack, &trace);
+		print_stack_trace(&trace, 0);
+	} else {
+		pr_err("(stack is not available)\n");
+	}
 }
 
 static void print_object(struct kmem_cache *cache, void *object)
